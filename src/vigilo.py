@@ -1,5 +1,6 @@
-import RPi.GPIO as GPIO
 import time
+import subprocess
+import RPi.GPIO as GPIO
 from twilio.rest import Client
 
 # Pi and pin setup
@@ -17,16 +18,20 @@ address = "xx:xx:xx:xx:xx:xx"
 network = None
 
 def isHome():
+    global network
+    global last_scan
     # Check if this is the first run or if the last network scan occured
     # more than five minutes ago, if so run a new scan
     if network is None or time.time() - last_scan >= 300:
         network = subprocess.check_output("sudo arp-scan -l", shell=True)
+        network = network.decode("utf-8")
         last_scan = time.time()
+        print(network)
     # a timer to make sure the arp-scan was finished
-    sleep(30)
+    # time.sleep(30)
 
     if address in network:
-        print(individual + "is home")
+        print(individual + " is home")
         return True
     else:
         print("No one is home")
@@ -41,10 +46,11 @@ txt_from = 'secret'
 twilio = Client(account, token)
 
 def send_text():
-    text = 'Intruder detected'
-    if isHome():
+    text = 'Intruder detected!' 
+    if not isHome():
         message = twilio.messages.create(to=txt_to, from_=txt_from, body=text)
-
+    else:
+        print("Individual is home, no text will be sent")
 isOpen = 0
 oldIsOpen = None
 
