@@ -3,7 +3,7 @@ import base64
 from imgurpython import ImgurClient
 
 def uploadImage(imgPath):
-	# Get client ID and secret from auth.ini
+	"""takes in an image path and returns the imgur URL """
 	config = get_config()
 	config.read('credentials.ini')
 	client_id = config.get('Imgur', 'CLIENT_ID')
@@ -18,7 +18,6 @@ def uploadImage(imgPath):
 		'description': 'please work'
 	}	
 	image = client.upload_from_path(imgPath, config=config, anon=True)
-	print(image[url])
 	return image['link']
 
 def get_config():
