@@ -86,7 +86,7 @@ def upload():
 # This function sends an alert to the registered phone number
 def send_text(url):
     text = "Intruder detected! Check out the intruder at " + url 
-    message = twilio.messages.create(to=txt_to, from=txt_from, body=text)
+    message = twilio.messages.create(to=txt_to, from_=txt_from, body=text)
 
 
 # If the script will be run on boot, the following line will give the Pi
